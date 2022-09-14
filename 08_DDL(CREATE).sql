@@ -8,12 +8,19 @@
 - User_tables : 자신의 계정이 소유한 객체 등에 관한 정보를 조회 할 수 있는 딕셔너리 뷰
 
 */
+
+SELECT * FROM USER_TABLES; --이 사용자가 가지고 있는 테이블이 어떤 것이 있나 조회.
 --------------------------------------------------------------------------------------------------------------------
 
--- DDL(DATA DEFINITION LANGUAGE) : 데이터 정의 언어
+-- DQL (Data Query Language) : 데이터 질의(조회) 언어
+-- DML (Data Manipulation Language) :데이터 조작 언어(데이터를 삽입,수정,삭제)
+-- TCL (Transaction Control Language): 트랜잭션 제어 언어(DML 수행 내용을 COMMIT,ROLLBACK하는 언어)
+
+-- DDL (DATA DEFINITION LANGUAGE) : 데이터 정의 언어
 
 -- 객체(OBJECT)를 만들고(CREATE), 수정(ALTER)하고, 삭제(DROP) 등
 -- 데이터의 전체 구조를 정의하는 언어로 주로 DB관리자, 설계자가 사용함
+-- (어떤 종류의 데이터만 넣게 할 것인지, 관계를 맺게 할 것인지 등을 정의...)
 
 -- 오라클에서의 객체 : 테이블(TABLE), 뷰(VIEW), 시퀀스(SEQUENCE),
 --                   인덱스(INDEX), 패키지(PACKAGE), 트리거(TRIGGER)
@@ -22,41 +29,72 @@
 
 --------------------------------------------------------------------------------------------------------------------
 
--- CREATE
+-- CREATE(창조,생성)
 
--- 테이블이나 인덱스, 뷰 등 다양한 데이터베이스 객체를 생성하는 구문
+-- 테이블이나 인덱스, 뷰 등 다양한 데이터베이스 객체를 생성하는 구문 (자바로 따지자면 NEW연산자와 같음)
 -- 테이블로 생성된 객체는 DROP 구문을 통해 제거 할 수 있음 
 
 -- 1. 테이블 생성하기
 -- 테이블이란?
 -- 행(row)과 열(column)으로 구성되는 가장 기본적인 데이터베이스 객체
--- 데이터 배이스 내에서 모든 데이터는 테이블을 통해서 저장된다.
+-- 데이터 베이스 내에서 모든 데이터는 **테이블**을 통해서 저장된다.
 
 
 -- [표현식] 
-/*
-    CREATE TABLE 테이블명 (
+/*        (객체종류)
+    CREATE TABLE  테이블명 (
         컬럼명 자료형(크기), 
         컬럼명 자료형(크기),
         ...);
 */
 
 /* 자료형
-    NUMBER : 숫자형(정수, 실수)
-    CHAR(크기) : 고정길이 문자형 (2000BYTE) 
+    - NUMBER : 숫자형(정수, 실수) -데이터는 정수,실수 구분이 없다.
+    
+    - NUMBER(몇자리숫자인지,소숫점 뒤에 몇자리인지) : 이거 오류 뜰 경우 많아서 그냥 NUMBER라고 많이 씀...
+    
+    - CHAR(크기) : 고정길이 문자형 (2000BYTE) 
         -> ex) CHAR(10) 컬럼에 'ABC' 3BYTE 문자열만 저장해도 10BYTE 저장공간을 모두 사용. 
         
-    VARCHAR2(크기) : 가변길이 문자형 (4000 BYTE)
-        -> ex) VARCHAR2(10) 컬럼에 'ABC' 3BYTE 문자열만 저장하면 나머지 7BYTE를 반환함.
+        - 전화번호, 민번 등 정해진 길이가 있는 경우 쓴다.
         
-    DATE : 날짜 타입
-    BLOB : 대용량 이진 데이터 (4GB)
-    CLOB : 대용량 문자 데이터 (4GB)
+    - VARCHAR2(크기) : 가변길이 문자형 (4000 BYTE)
+        -> ex) VARCHAR2(10) 컬럼에 'ABC' 3BYTE 문자열만 저장하면 나머지 7BYTE를 반환함.
+        -> 반환하는 추가적인 작업이 있으니 속도는 느림.
+        
+        - 이름 등 길이가 가변적인 경우 쓴다.
+        
+    - DATE : 날짜 타입
+    
+    -	1BYTE * 1024 = 1KB
+    	1KB * 1024 = 1MB
+    	1MB * 1024 = 1GB인데,,, 대량의 글을 쓸 때,,VATCHAR로 제어가 안 될 때 쓴다.
+    
+    
+    - BLOB : 대용량 이진 데이터 (4GB) - 동영상,이미지 등도 저장가능. 지양하는 추세...속도적인 문제가 생기니까... 
+    - CLOB : 대용량 문자 데이터 (4GB) - 문자만 저장하는 것 (CHARACTER) 
+    
+    <추가로 더 알아두면 좋은..>
+    - LOB
+    - TIMESTAMP
 */
 
 -- MEMBER 테이블 생성
+--           멤버라는 예약어가 있긴 한데 테이블명 위치에 있으니까 상관없다. 그래도 신경쓰이면"MEMBER"라고 적기
+CREATE TABLE MEMBER(
+	MEMBER_ID VARCHAR2(20),
+	MEMBER_PWD VARCHAR2(20),
+	MEMBER_NAME VARCHAR2(30), 
+	MEMBER_SSN  CHAR(14), 
+	ENROLL_DATE DATE DEFAULT SYSDATE --기본값이 현재시간이라는 뜻
+);
+
+SELECT * FROM MEMBER;
 
 
+--SQL 작성법 : 대소문자 상관 없지만, 대문자 작성을 권장한다(다른 언어와의 구분을 위해)
+--			 연결된 단어 사이에는 "_"(언더바)를 사용한다.
+--문자인코딩 UTF-8 : 영어,숫자는 1BYTE 취급을 하고, 한글이나 특수문자는 3BYTE 취급을 한다.
 
 -- 만든 테이블 확인
 
@@ -66,45 +104,91 @@
 -- COMMENT ON COLUMN 테이블명.컬럼명 IS '주석내용';
 
 
+COMMENT ON COLUMN MEMBER.MEMBER_ID IS '회원 아이디';
+COMMENT ON COLUMN MEMBER.MEMBER_PWD IS '회원 비밀번호';
+COMMENT ON COLUMN MEMBER.MEMBER_NAME IS '회원 이름';
+COMMENT ON COLUMN MEMBER.MEMBER_SSN IS '회원 주민 등록 번호';
+COMMENT ON COLUMN MEMBER.ENROLL_DATE IS '회원 가입일';
 
 
 -- USER_TABLES : 사용자가 작성한 테이블을 확인 하는 뷰
 -- 데이터 딕셔너리에 정의되어 있음
 SELECT * FROM USER_TABLES;
 
--- DESC문 : 테이블의 구조를 표시
-DESC MEMBER;
-
 
 -- MEMBER 테이블에 샘플 데이터 삽입
 
+--[작성법] INSERT INTO 테이블명 VALUES (값1,값2..- 컬럼 수만큼 쓴다.)
+INSERT INTO MEMBER VALUES ('MEM01','123abc','홍길동','930203-2000000',DEFAULT);
+																	--SYSDATE
+-- * INSERT/UPDATE 시 컬럼값으로 DEFAULT를 작성하면
+-- 테이블 생성 시 해당 컬럼에 지정된 DEFAULT값으로 삽입이 된다.
 
 
 --  데이터  삽입 확인
 
-
+SELECT * FROM MEMBER;
+COMMIT;
 
 -- 추가 샘플 데이터 삽입
--- 가입일 -> SYSDATE를 활용
+-- (1) 가입일 -> SYSDATE를 활용
+INSERT INTO MEMBER VALUES ('MEM02','PASSWORD','나나나','900101-2000000',SYSDATE);
 
+-- (2) 가입일 -> DEFAULT 활용(테이블 생성 시 정의된 값이 반영됨)
+INSERT INTO MEMBER VALUES ('MEM03','password','다다다','910101-2000000',DEFAULT);
 
--- 가입일 -> DEFAULT 활용(테이블 생성 시 정의된 값이 반영됨)
+-- (3) 가입일 -> INSERT 시 미작성 하는 경우 -> DEAFULT 값이 반영됨
+----[작성법]
+----INSERT INTO 테이블명(컬럼명1,컬럼명2,컬럼명3)
+----VALUSE (값1,값2,값3);
 
+INSERT INTO MEMBER(MEMBER_ID,MEMBER_PWD ,MEMBER_NAME)
+VALUES ('MEM04','password','라라라');
 
--- 가입일 -> INSERT 시 미작성 하는 경우 -> DEAFULT 값이 반영됨
+-- NULL: 컬럼의 값이 없다는 뜻 
+--DATE형식에는 DEFAULT값이 반영됨.
 
+--(4) **JDBC에서 날짜를 입력받았을 때 삽입하는 방법**--
 
---  데이터  삽입 확인
+-- JAVA에서 '2022-09-13 17:33:33'이라고 입력을 받으면
+-- 바로 시간 형태인지 못 알아볼 수도 있으니까 TO_DATE을 쓴다.
 
+INSERT INTO MEMBER VALUES ('MEM05','pass05','마마마','950101-2000000',
+							TO_DATE('2022-09-13 17:33:33','YYYY-MM-DD HH24:MI:SS'));
+									--이 문자열은           이 형태로 작성되는 시간으로 변환한다.라는 뜻
+--(5)  데이터  삽입 확인
 
+SELECT * FROM MEMBER;
+COMMIT;
 
+--(6) **NUMBER타입의 문제점**
+--MEMBER2테이블(아이디,비번,이름,전화번호) 4개를 입력받아보겠다~
+
+CREATE TABLE MEMBER2 (
+			MEMBER_ID VARCHAR2(20),
+			MEMBER_PWD VARCHAR2(20),
+			MEMBER_NAME VARCHAR2(30),
+			MEMBER_TEL NUMBER)
+			
+-- MEMBER_TEL 숫자로만 써져있으니까 NUMBER타입으로 하는데,
+-- NUMBER타입컬럼에 데이터 삽입 시, 제일 앞에 0이 있으면 이를 자동으로 제거한다.
+-- 그러므로, 전화번호, 주민등록번호처럼 숫자로만 되어있는 데이터지만
+-- 0으로 시작할 가능성이 있으면 CHAR,VARCHAR2같은 문자형을 사용해야 한다.
+			 
+INSERT INTO MEMBER2 VALUES('MEM01','pass01','가가가',7712341234);
+INSERT INTO MEMBER2 VALUES('MEM02','pass02','나나나',01066585321);
+												---앞에 있는 0이 사라진다...
+
+SELECT * FROM MEMBER2;
 --------------------------------------------------------------------------------------------------------------------
 
+--<<<<<<중요>>>>>>--
 
 -- 제약 조건(CONSTRAINTS)
 /*
     사용자가 원하는 조건의 데이터만 유지하기 위해서 특정 컬럼에 설정하는 제약.
     데이터 무결성 보장을 목적으로 함.
+    -> 중복데이터가 없어야만 한다.
 
     + 입력 데이터에 문제가 없는지 자동으로 검사하는 목적
     + 데이터의 수정/삭제 가능여부 검사등을 목적으로 함 
@@ -130,9 +214,13 @@ SELECT * FROM USER_CONS_COLUMNS;
 -- 해당 컬럼에 반드시 값이 기록되어야 하는 경우 사용
 -- 삽입/수정시 NULL값을 허용하지 않도록 컬럼레벨에서 제한
 
+								-- [컬럼레벨]이란? 
+								-- 테이블 생성 시 컬럼을 정의하는 부분에 작성하는 것
+
 
 CREATE TABLE USER_USED_NN(
-    USER_NO , 
+    USER_NO NUMBER NOT NULL, --사용자 번호니까 NULL값 허용되지 않도록 제한해본다.(모든 사용자는 사용자 번호가 있어야 함)
+    						 --[컬럼레벨 제약 조건 생성방법임.]
     
     USER_ID VARCHAR2(20) ,
     USER_PWD VARCHAR2(30) ,
@@ -150,7 +238,7 @@ INSERT INTO USER_USED_NN
 VALUES(NULL, NULL, NULL, NULL, NULL, '010-1234-5678', 'hong123@kh.or.kr');
 --> NOT NULL 제약 조건에 위배되어 오류 발생 
 -- ORA-01400: cannot insert NULL into ("KH"."USER_USED_NN"."USER_NO")
-
+-- ORA-01400: NULL을 ("KH"."USER_USED_NN"."USER_NO") 안에 삽입할 수 없다는 뜻.
 --------------------------------------------------------------------------------------------------------------------
 
 
@@ -159,19 +247,31 @@ VALUES(NULL, NULL, NULL, NULL, NULL, '010-1234-5678', 'hong123@kh.or.kr');
 -- 컬럼레벨에서 설정 가능, 테이블 레벨에서 설정 가능
 -- 단, UNIQUE 제약 조건이 설정된 컬럼에 NULL 값은 중복 삽입 가능.
 
+	--* [테이블 레벨] 
+	--테이블 생성 시 컬럼 정의가 끝난 후 마지막에 작성
+
+--*제약조건명 지정 방법
+--(1) 컬럼레벨 : [CONSTRAINT 제약조건명] 제약조건 --[CONSTRAINT 제약조건명]쓰면 제약조건명 지정, 안쓰면 미지정
+		--EX) CONSTRAINT 제약조건명 UNIQUE
+--(2) 테이블레벨 : [CONSTRAINT 제약조건명] 제약조건 (컬럼명) --[CONSTRAINT 제약조건명]쓰면 제약조건명 지정, 안쓰면 미지정
 
 -- UNIQUE 제약 조건 테이블 생성
 CREATE TABLE USER_USED_UK(
     USER_NO NUMBER,
-    USER_ID VARCHAR2(20) , 
-    
+--    USER_ID VARCHAR2(20) UNIQUE , --컬럼레벨에서 작성(제약조건명 미지정)
+--    USER_ID VARCHAR2(20) CONSTRAINT USER_ID_U UNIQUE,--컬럼레벨에서 작성(제약조건명 지정)
+    USER_ID VARCHAR2(20),
     USER_PWD VARCHAR2(30) ,
     USER_NAME VARCHAR2(30),
     GENDER VARCHAR2(10),
     PHONE VARCHAR2(30),
-    EMAIL VARCHAR2(50)
-
+    EMAIL VARCHAR2(50),
+    /*여기가 테이블레벨입니더...*/
+--	UNIQUE(USER_ID) --테이블 레벨(제약조건 미지정)
+	CONSTRAINT USER_ID_U UNIQUE(USER_ID) --테이블 레벨(제약조건 지정)
 );
+
+DROP TABLE USER_USED_UK; --테이블 삭제
 
 
 INSERT INTO USER_USED_UK
@@ -180,6 +280,7 @@ VALUES(1, 'user01', 'pass01', '홍길동', '남', '010-1234-5678', 'hong123@kh.o
 INSERT INTO USER_USED_UK
 VALUES(1, 'user01', 'pass01', '홍길동', '남', '010-1234-5678', 'hong123@kh.or.kr');
 --> 같은 아이디인 데이터가 이미 테이블에 있으므로 UNIQUE 제약 조건에 위배되어 오류발생
+--ORA-00001: 무결성 제약 조건(KH_LSY.USER_ID_U)에 위배됩니다
 
 INSERT INTO USER_USED_UK
 VALUES(1, NULL, 'pass01', '홍길동', '남', '010-1234-5678', 'hong123@kh.or.kr');
@@ -196,15 +297,27 @@ SELECT  * FROM USER_USED_UK;
 -- 해당 제약 조건이 설정된 테이블명, 컬럼, 제약 조건 타입 조회 
 SELECT UCC.TABLE_NAME, UCC.COLUMN_NAME, UC.CONSTRAINT_TYPE
 FROM USER_CONSTRAINTS UC, USER_CONS_COLUMNS UCC
-WHERE UCC.CONSTRAINT_NAME = UC.CONSTRAINT_NAME
-AND UCC.CONSTRAINT_NAME = '제약조건명';
+WHERE UCC.CONSTRAINT_NAME = UC.CONSTRAINT_NAME --오라클 방식으로 JOIN함
+AND UCC.CONSTRAINT_NAME = 'USER_ID_U';
 
-
+--이 제약조건에 대한 딕셔너리 뷰임,,,
 ---------------------------------------
 
 
 -- UNIQUE 복합키
 -- 두 개 이상의 컬럼을 묶어서 하나의 UNIQUE 제약조건을 설정함
+-- 두 컬럼이 모두 같아야 중복이라고 인식이 된다.
+-- [USER_ID]    [USER NAME]
+-- 	user01			홍길동
+-- 	user02			홍길동 (중복x)
+-- 	user01			김길동 (중복x)
+-- 	user01			홍길동 (중복o)
+
+-- * 복합키 지정은 [테이블레벨]만 가능하다.*
+-- * 복합키 지정은 모든 컬럼의 값이 같을 때 위배된다.
+-- * [작성법]
+-- * [CONSTRAINT USER_ID_NAME_U] UNIQUE(USER_ID,USER_NAME)
+ 
 CREATE TABLE USER_USED_UK2(
     USER_NO NUMBER,
     USER_ID VARCHAR2(20),
@@ -212,45 +325,47 @@ CREATE TABLE USER_USED_UK2(
     USER_NAME VARCHAR2(30),
     GENDER VARCHAR2(10),
     PHONE VARCHAR2(30),
-    EMAIL VARCHAR2(50)
+    EMAIL VARCHAR2(50),
+    CONSTRAINT USER_ID_NAME_U UNIQUE(USER_ID,USER_NAME)
   
 );
-
-
 INSERT INTO USER_USED_UK2
 VALUES(1, 'user01', 'pass01', '홍길동', '남', '010-1234-5678', 'hong123@kh.or.kr');
-
-INSERT INTO USER_USED_UK2
-VALUES(2, 'user01', 'pass01', '홍길동', '남', '010-1234-5678', 'hong123@kh.or.kr');
---> USER_NO가 다름
+--에러X
 
 INSERT INTO USER_USED_UK2
 VALUES(2, 'user02', 'pass01', '홍길동', '남', '010-1234-5678', 'hong123@kh.or.kr');
---> USER_ID가 다름
+--에러X
 
 INSERT INTO USER_USED_UK2
-VALUES(1, 'user01', 'pass01', '홍길동', '남', '010-1234-5678', 'hong123@kh.or.kr');
---> 여러 컬럼을 묶어서 UNIQUE 제약 조건이 설정되어 있으면 
--- 두 컬럼이 모두 중복되는 값일 경우에만 오류 발생
+VALUES(3, 'user01', 'pass01', '고길동', '남', '010-1234-5678', 'hong123@kh.or.kr');
+--에러X
+
+INSERT INTO USER_USED_UK2
+VALUES(4, 'user01', 'pass01', '홍길동', '남', '010-1234-5678', 'hong123@kh.or.kr');
+--ORA-00001: 무결성 제약 조건(KH_LSY.USER_ID_NAME_U)에 위배됩니다
+--둘다 중복 되었을 때만 제약조건 위배 에러 발생
+-------------------------------------------------------------------------------------
 
 SELECT * FROM USER_USED_UK2;
-
 
 ----------------------------------------------------------------------------------------------------------------
 
 -- 3. PRIMARY KEY(기본키) 제약조건 
 
 -- 테이블에서 한 행의 정보를 찾기위해 사용할 컬럼을 의미함
--- 테이블에 대한 식별자(IDENTIFIER) 역할을 함
--- NOT NULL + UNIQUE 제약조건의 의미
+-- 테이블에 대한 식별자(IDENTIFIER,학번 등을 의미) 역할을 함
+
+-- NOT NULL + UNIQUE 제약조건의 의미 (== 중복되지 않는 값이 필수로 존재해야 한다는 뜻)
+			--UNIQUE는 NULL도 가능했음,,
 -- 한 테이블당 한 개만 설정할 수 있음
 -- 컬럼레벨, 테이블레벨 둘다 설정 가능함
 -- 한 개 컬럼에 설정할 수도 있고, 여러개의 컬럼을 묶어서 설정할 수 있음
 
 
 CREATE TABLE USER_USED_PK(
-    USER_NO NUMBER ,
-    
+    USER_NO NUMBER CONSTRAINT USER_NO_PK PRIMARY KEY, --컬럼 레벨
+    				--제약조건명 지정
     USER_ID VARCHAR2(20) UNIQUE,
     USER_PWD VARCHAR2(30) NOT NULL,
     USER_NAME VARCHAR2(30),
@@ -258,6 +373,8 @@ CREATE TABLE USER_USED_PK(
     PHONE VARCHAR2(30),
     EMAIL VARCHAR2(50)
 
+    --테이블 레벨
+    --,CONSTRAINT USER_NO_PK PRIMARY KEY(USER_NO)
 );
 
 INSERT INTO USER_USED_PK
@@ -271,7 +388,8 @@ INSERT INTO USER_USED_PK
 VALUES(NULL, 'user03', 'pass03', '유관순', '여', '010-9999-3131', 'yoo123@kh.or.kr');
 --> 기본키가 NULL 이므로 오류
 
-
+SELECT *
+FROM USER_USED_PK;
 ---------------------------------------
 
 -- PRIMARY KEY 복합키 (테이블 레벨만 가능)
@@ -286,11 +404,15 @@ CREATE TABLE USER_USED_PK2(
     CONSTRAINT PK_USERNO_USERID PRIMARY KEY(USER_NO, USER_ID) -- 복합키
 );
 
+
+--------------------------------------------------------------------------------------
+
 INSERT INTO USER_USED_PK2
 VALUES(1, 'user01', 'pass01', '홍길동', '남', '010-1234-5678', 'hong123@kh.or.kr');
 
 INSERT INTO USER_USED_PK2
 VALUES(1, 'user02', 'pass02', '이순신', '남', '010-5678-9012', 'lee123@kh.or.kr');
+
 
 INSERT INTO USER_USED_PK2
 VALUES(2, 'user01', 'pass01', '유관순', '여', '010-9999-3131', 'yoo123@kh.or.kr');
@@ -301,7 +423,7 @@ VALUES(1, 'user01', 'pass01', '신사임당', '여', '010-9999-9999', 'sin123@kh
 
 SELECT * FROM USER_USED_PK2;
 
--- PRIMARY KEY는 NULL이 들어갈 수 없음
+-- PRIMARY KEY는 NULL이 들어갈 수 없음 (하나만 NULL이 들어가도 안 됨!!!)
 INSERT INTO USER_USED_PK2
 VALUES(NULL, 'user01', 'pass01', '신사임당', '여', '010-9999-9999', 'sin123@kh.or.kr');
 
@@ -312,11 +434,11 @@ VALUES(NULL, 'user01', 'pass01', '신사임당', '여', '010-9999-9999', 'sin123
 
 -- 참조(REFERENCES)된 다른 테이블의 컬럼이 제공하는 값만 사용할 수 있음
 -- FOREIGN KEY제약조건에 의해서 테이블간의 관계(RELATIONSHIP)가 형성됨
--- 제공되는 값 외에는 NULL을 사용할 수 있음
+-- 제공되는 값 외에는 NULL(참조하는 값이 없음)을 사용할 수 있음
 
 -- 컬럼레벨일 경우
 -- 컬럼명 자료형(크기) [CONSTRAINT 이름] REFERENCES 참조할 테이블명 [(참조할컬럼)] [삭제룰]
-
+													--참조할 컬럼 안쓰면, PK쓴대
 -- 테이블레벨일 경우
 -- [CONSTRAINT 이름] FOREIGN KEY (적용할컬럼명) REFERENCES 참조할테이블명 [(참조할컬럼)] [삭제룰]
 
@@ -327,6 +449,8 @@ CREATE TABLE USER_GRADE(
   GRADE_CODE NUMBER PRIMARY KEY,
   GRADE_NAME VARCHAR2(30) NOT NULL
 );
+
+
 INSERT INTO USER_GRADE VALUES (10, '일반회원');
 INSERT INTO USER_GRADE VALUES (20, '우수회원');
 INSERT INTO USER_GRADE VALUES (30, '특별회원');
@@ -342,10 +466,16 @@ CREATE TABLE USER_USED_FK(
   GENDER VARCHAR2(10),
   PHONE VARCHAR2(30),
   EMAIL VARCHAR2(50),
-  GRADE_CODE NUMBER
+  GRADE_CODE NUMBER CONSTRAINT GRADE_CODE_FK REFERENCES USER_GRADE (GRADE_CODE)  --[컬럼 레벨로 작성하기!]
+  									--(참조할 컬럼명 - PK제약조건 있는 컬럼, UK제약조건 이쓴 컬럼 둘 중에 하나를 씀 보통 PK쓴대)
+  									-- 컬럼명 미작성 시 USER_GRADE 테이블의 PK를 자동 참조...
   
+  --[테이블레벨로 작성하기!]
+--  , CONSTRAINT GRADE_CODE_FK FOREIGN KEY (GRADE_CODE) REFERENCES USER_GRADE
+  							--FOREIGN KEY라는 단어는 테이블 레벨에서만 사용한다!		
 );
 
+COMMIT;
 
 INSERT INTO USER_USED_FK
 VALUES(1, 'user01', 'pass01', '홍길동', '남', '010-1234-5678', 'hong123@kh.or.kr', 10);
@@ -367,25 +497,36 @@ VALUES(5, 'user05', 'pass05', '윤봉길', '남', '010-6666-1234', 'yoon123@kh.o
 --> 50이라는 값은 USER_GRADE 테이블 GRADE_CODE 컬럼에서 제공하는 값이 아니므로
  -- 외래키 제약 조건에 위배되어 오류 발생.
 
-
+-- ORA-02291: 무결성 제약조건(KH_LSY.GRADE_CODE_FK)이 위배되었습니다- 부모 키가 없습니다
 ---------------------------------------
 
 -- * FOREIGN KEY 삭제 옵션 
 -- 부모 테이블의 데이터 삭제 시 자식 테이블의 데이터를 
 -- 어떤식으로 처리할 지에 대한 내용을 설정할 수 있다.
+--2가지 옵션이 있음!
 
 SELECT * FROM USER_GRADE;
 SELECT * FROM USER_USED_FK;
 
--- 1) ON DELETE RESTRICTED(삭제 제한)로 기본 지정되어 있음
+-- (1) ON DELETE RESTRICTED(삭제 제한)로 기본 지정되어 있음
 -- FOREIGN KEY로 지정된 컬럼에서 사용되고 있는 값일 경우
 -- 제공하는 컬럼의 값은 삭제하지 못함
 
+DELETE FROM USER_GRADE
+WHERE GRADE_CODE = 30;
+-- ORA-02292: 무결성 제약조건(KH_LSY.GRADE_CODE_FK)이 위배되었습니다- 자식 레코드가 발견되었습니다
+														--레코드:기록  -> 자식에서 이걸 사용하고 있다는 거지~
+
 -- GRADE_CODE 중 20은 외래키로 참조되고 있지 않으므로 삭제가 가능함.
+DELETE FROM USER_GRADE
+WHERE GRADE_CODE = 20;
 
+ROLLBACK;
 
+SELECT *
+FROM USER_GRADE;
 
--- 2) ON DELETE SET NULL : 부모키 삭제시 자식키를 NULL로 변경하는 옵션
+-- (2) ON DELETE SET NULL : 부모키 삭제시 자식키를 NULL로 변경하는 옵션
 CREATE TABLE USER_GRADE2(
   GRADE_CODE NUMBER PRIMARY KEY,
   GRADE_NAME VARCHAR2(30) NOT NULL
