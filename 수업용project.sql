@@ -1,15 +1,15 @@
 
---ALTER SESSION SET "_ORACLE_SCRIPT" =  TRUE;
---
----- 수업용 프로젝트 계정 생성하기!
---CREATE USER project IDENTIFIED BY project1234;
---
-----권한 부여
---GRANT CONNECT, RESOURCE, CREATE VIEW TO project;
---
-----객체 생성 공간 할당
---ALTER USER project DEFAULT TABLESPACE SYSTEM
---QUOTA UNLIMITED ON SYSTEM;
+ALTER SESSION SET "_ORACLE_SCRIPT" =  TRUE;
+
+-- 수업용 프로젝트 계정 생성하기!
+CREATE USER project IDENTIFIED BY project1234;
+
+--권한 부여
+GRANT CONNECT, RESOURCE, CREATE VIEW TO project;
+
+--객체 생성 공간 할당
+ALTER USER project DEFAULT TABLESPACE SYSTEM
+QUOTA UNLIMITED ON SYSTEM;
 
 -------------------------------------------------
 
@@ -275,7 +275,7 @@ WHERE MEMBER_NO = 4;
 				--> 로그인한 회원의 번호
 
 UPDATE "MEMBER" SET
-MEMBER_PW = '$2a$10$E88LlCxnGMJoHfqKwyWE5ucxvV65RMLhtSYxHy8RoO5nXslUo2uvK';
+MEMBER_PW = '$2a$10$A4xti.YA3PYe0QU58EiOceZRfzjYS1v1twMDqXbC6NvY8kny.6Ly.';
 
 COMMIT;
 
@@ -303,3 +303,7 @@ WHERE MEMBER_EMAIL = 'user01111@kh.or.kr'
 AND MEMBER_DEL_FL  = 'N';
 
 
+
+
+-----------------------
+SELECT * FROM BOARD;
